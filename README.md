@@ -21,16 +21,35 @@ K-Means se široko koristi u analizi podataka, obradi slike, mašinskom učenju 
 
 1. **Python implementacija**
    
-   1.1 Sekvencijalna verzija algoritma.
+   1.1 Sekvencijalna verzija algoritma:
+   - Početni centroidi se nasumično biraju iz skupa podataka.
+   - Svaka tačka se dodeljuje najbližem centroidu.
+   - Centroidi se ažuriraju računajući srednju vrednost svih tačaka koje im pripadaju.
+   - Ponavljanje dok se ne postigne konvergencija ili maksimalan broj iteracija.
    
-   1.2 Paralelizovana verzija algoritma korišćenjem `multiprocessing` biblioteke.
+   1.2 Paralelizovana verzija algoritma:
+   - Koristi `multiprocessing` biblioteku i deljenu memoriju (`shared_memory`) za skladištenje podataka.
+   - Skup tačaka se deli na više blokova koji se obrađuju paralelno u različitim procesima.
+   - Svaki proces računa udaljenosti i privremene rezultate za dodelu klastera i sumiranje tačaka po klasterima.
+   - Glavni proces kombinuje rezultate i ažurira centre klastera.
 
 2. **Rust implementacija**
    
-   2.1 Sekvencijalna verzija algoritma u programskom jeziku Rust.
+   2.1 Sekvencijalna verzija algoritma:
+   - Korišćenje `Vec<Point>` za skladištenje tačaka i centroida.
+   - Dodela klastera i računanje novih centroida implementirano sa minimalnim memorijskim kopiranjem.
+   - Praćenje maksimalnog pomeraja centroida radi konvergencije.
    
-   2.2 Paralelizovana verzija algoritma korišćenjem niti
+   2.2 Paralelizovana verzija algoritma:
+   - Koristi se **Rayon** biblioteka (`par_iter_mut`) za jednostavnu i efikasnu paralelizaciju petlji.
+   - Svaka tačka se paralelno obrađuje radi određivanja najbližeg centroida.
+   - Sume i brojači za centroida se akumuliraju, a nakon završetka iteracije centroidi se ažuriraju.
+   - Paralelizacija je „zero-cost“ jer Rayon automatski balansira opterećenje između niti i koristi radne stekove.
+
 ---
+
+### Vizuelizacija
+Jos treba razmisliti oko odabira biblioteke i nacina vizuelizacije...
 
 ### Očekivani rezultati
 - Jasna implementacija sekvencijalne i paralelne verzije K-Means algoritma u Python-u i Rust-u.
@@ -38,6 +57,9 @@ K-Means se široko koristi u analizi podataka, obradi slike, mašinskom učenju 
 - Grafički prikazi ubrzanja u odnosu na broj procesorskih jezgara, sa idealnim (teorijskim) linijama skaliranja.
 - Vizualizacija procesa klasterizacije kroz Rust aplikaciju.
 - Kompletan izveštaj sa tehničkim detaljima, tabelama, grafikonima i analizom rezultata.
+
+
+
 
 ---
 
