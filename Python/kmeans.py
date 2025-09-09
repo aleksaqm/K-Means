@@ -217,6 +217,7 @@ class KMeans:
 
                     self._assign_clusters_parallel(points, pool)
                     self._update_centroids_parallel(points, pool)
+                    # self._update_centroids(points)
 
                     centroid_shift = np.linalg.norm(self.centroids - old_centroids)
                     if verbose:

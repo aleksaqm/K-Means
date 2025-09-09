@@ -1,29 +1,29 @@
-use crate::point::{euclidean_distance, mean, Point};
+use crate::point::{euclidean_distance, Point};
 use rand::prelude::*;
 use rand::seq::SliceRandom;
 use rayon::prelude::*;
 
-/// Returns a vector of centroids for each iteration (for state tracking), and final assignments
 pub fn kmeans_par(
     points: &[Point],
     k: usize,
     max_iters: usize,
     tolerance: f64,
     initial_centroids: Option<Vec<Point>>,
-) -> (Vec<Vec<Point>>, Vec<usize>) {
+) -> (Vec<Point>, Vec<usize>) {
     let mut rng = thread_rng();
     let mut centroids: Vec<Point> = match initial_centroids {
         Some(centroids) => centroids,
         None => points.choose_multiple(&mut rng, k).cloned().collect(),
     };
     let mut assignments = vec![0; points.len()];
-    let mut states = vec![centroids.clone()];
 
     for _ in 0..max_iters {
-        assignments = points
-            .par_iter()
-            .map(|point| {
-                centroids
+        assignments
+            .par_iter_mut()
+            .enumerate()
+            .for_each(|(i, assign)| {
+                let point = &points[i];
+                let cluster = centroids
                     .iter()
                     .enumerate()
                     .min_by(|(_, a), (_, b)| {
@@ -32,39 +32,56 @@ pub fn kmeans_par(
                             .unwrap()
                     })
                     .map(|(j, _)| j)
-                    .unwrap_or(0)
-            })
-            .collect();
+                    .unwrap_or(0);
+                *assign = cluster;
+            });
+
+        let mut sums = vec![Point::zero(); k];
+        let mut counts = vec![0usize; k];
+        points
+            .iter()
+            .zip(assignments.iter())
+            .for_each(|(point, &cluster)| {
+                sums[cluster] = sums[cluster].add(point);
+                counts[cluster] += 1;
+            });
+
+        // let (sums, counts) = points
+        //     .par_iter()
+        //     .zip(assignments.par_iter())
+        //     .fold(
+        //         || (vec![Point::zero(); k], vec![0usize; k]),
+        //         |mut acc, (point, &cluster)| {
+        //             acc.0[cluster] = acc.0[cluster].add(point);
+        //             acc.1[cluster] += 1;
+        //             acc
+        //         },
+        //     )
+        //     .reduce(
+        //         || (vec![Point::zero(); k], vec![0usize; k]),
+        //         |(mut sums1, mut counts1), (sums2, counts2)| {
+        //             for j in 0..k {
+        //                 sums1[j] = sums1[j].add(&sums2[j]);
+        //                 counts1[j] += counts2[j];
+        //             }
+        //             (sums1, counts1)
+        //         },
+        //     );
 
         let mut max_shift = 0.0;
-        let new_centroids: Vec<Point> = (0..k)
-            .into_par_iter()
-            .map(|j| {
-                let cluster_points: Vec<Point> = points
-                    .iter()
-                    .enumerate()
-                    .filter(|(i, _)| assignments[*i] == j)
-                    .map(|(_, p)| p.clone())
-                    .collect();
-                if !cluster_points.is_empty() {
-                    mean(&cluster_points)
-                } else {
-                    centroids[j].clone()
+        for j in 0..k {
+            if counts[j] > 0 {
+                let new_centroid = sums[j].div(counts[j] as f64);
+                let shift = euclidean_distance(&centroids[j], &new_centroid);
+                if shift > max_shift {
+                    max_shift = shift;
                 }
-            })
-            .collect();
-
-        for (j, new_centroid) in new_centroids.iter().enumerate() {
-            let shift = euclidean_distance(&centroids[j], new_centroid);
-            if shift > max_shift {
-                max_shift = shift;
+                centroids[j] = new_centroid;
             }
-            centroids[j] = new_centroid.clone();
         }
-        states.push(centroids.clone());
         if max_shift < tolerance {
             break;
         }
     }
-    (states, assignments)
+    (centroids, assignments)
 }
