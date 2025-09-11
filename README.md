@@ -49,7 +49,8 @@ K-Means se široko koristi u analizi podataka, obradi slike, mašinskom učenju 
 ---
 
 ### Vizuelizacija
-Jos treba razmisliti oko odabira biblioteke i nacina vizuelizacije...
+Vizuelizacija će biti urađena sa bibliotokeom `Plotters`.
+Za svaku iteraciju ćemo imati sliku na kojoj ćemo videti gde se u toj iteraciji nalaze centroidi uz prikaz gde su sve tačke koje klasterizujemo.
 
 ### Očekivani rezultati
 - Jasna implementacija sekvencijalne i paralelne verzije K-Means algoritma u Python-u i Rust-u.
