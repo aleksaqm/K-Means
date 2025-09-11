@@ -16,7 +16,7 @@ pub fn kmeans_seq(
     };
     let mut assignments = vec![0; points.len()];
 
-    for _ in 0..max_iters {
+    for i in 0..max_iters {
         for (i, point) in points.iter().enumerate() {
             let mut min_dist = f64::MAX;
             let mut cluster = 0;
@@ -48,6 +48,7 @@ pub fn kmeans_seq(
                 centroids[j] = new_centroid;
             }
         }
+        println!("Iteration {i}, shift = {max_shift}");
         if max_shift < tolerance {
             break;
         }

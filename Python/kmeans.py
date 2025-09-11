@@ -205,19 +205,19 @@ class KMeans:
             self._shared_memory = None
 
 
-    def parallel_fit(self, points, verbose=False):
+    def parallel_fit(self, points, verbose=False, n_jobs=None):
         self.centroids = self._initialize_centroids(points)
         self._create_shared_memory(points)
 
-        n_cores = cpu_count()
+        if n_jobs is None:
+            n_jobs = cpu_count()
         try:
-            with Pool(n_cores) as pool:  # <- Pool se kreira samo jednom
+            with Pool(n_jobs) as pool:  # Pool sa zadatim brojem procesa
                 for iteration in range(self.max_iters):
                     old_centroids = self.centroids.copy()
 
                     self._assign_clusters_parallel(points, pool)
                     self._update_centroids_parallel(points, pool)
-                    # self._update_centroids(points)
 
                     centroid_shift = np.linalg.norm(self.centroids - old_centroids)
                     if verbose:
@@ -240,7 +240,7 @@ def create_test_data(n_samples=1000, n_features=2, centers=5, cluster_std=1.5, r
 
 
 def main():
-    test_data, y_true = create_test_data(n_samples=50000, centers=8, random_state=42)
+    test_data, y_true = create_test_data(n_samples=100000, centers=4, random_state=42)
     print(f"Created dataset with {test_data.shape[0]} samples and {test_data.shape[1]} features")
 
     # Run sequential K-means

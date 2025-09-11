@@ -6,7 +6,7 @@ use rand::prelude::*;
 use std::time::Instant;
 
 fn main() {
-    let n_points = 10000000;
+    let n_points = 1000000;
     let k = 4;
     let max_iters = 100;
     let tolerance = 0.001;

@@ -17,7 +17,7 @@ pub fn kmeans_par(
     };
     let mut assignments = vec![0; points.len()];
 
-    for _ in 0..max_iters {
+    for i in 0..max_iters {
         assignments
             .par_iter_mut()
             .enumerate()
@@ -36,37 +36,28 @@ pub fn kmeans_par(
                 *assign = cluster;
             });
 
-        let mut sums = vec![Point::zero(); k];
-        let mut counts = vec![0usize; k];
-        points
-            .iter()
-            .zip(assignments.iter())
-            .for_each(|(point, &cluster)| {
-                sums[cluster] = sums[cluster].add(point);
-                counts[cluster] += 1;
-            });
-
-        // let (sums, counts) = points
-        //     .par_iter()
-        //     .zip(assignments.par_iter())
-        //     .fold(
-        //         || (vec![Point::zero(); k], vec![0usize; k]),
-        //         |mut acc, (point, &cluster)| {
-        //             acc.0[cluster] = acc.0[cluster].add(point);
-        //             acc.1[cluster] += 1;
-        //             acc
-        //         },
-        //     )
-        //     .reduce(
-        //         || (vec![Point::zero(); k], vec![0usize; k]),
-        //         |(mut sums1, mut counts1), (sums2, counts2)| {
-        //             for j in 0..k {
-        //                 sums1[j] = sums1[j].add(&sums2[j]);
-        //                 counts1[j] += counts2[j];
-        //             }
-        //             (sums1, counts1)
-        //         },
-        //     );
+        // Parallel reduction for sums and counts
+        let (sums, counts) = points
+            .par_iter()
+            .zip(assignments.par_iter())
+            .fold(
+                || (vec![Point::zero(); k], vec![0usize; k]),
+                |mut acc, (point, &cluster)| {
+                    acc.0[cluster] = acc.0[cluster].add(point);
+                    acc.1[cluster] += 1;
+                    acc
+                },
+            )
+            .reduce(
+                || (vec![Point::zero(); k], vec![0usize; k]),
+                |(mut sums1, mut counts1), (sums2, counts2)| {
+                    for j in 0..k {
+                        sums1[j] = sums1[j].add(&sums2[j]);
+                        counts1[j] += counts2[j];
+                    }
+                    (sums1, counts1)
+                },
+            );
 
         let mut max_shift = 0.0;
         for j in 0..k {
@@ -79,6 +70,8 @@ pub fn kmeans_par(
                 centroids[j] = new_centroid;
             }
         }
+        println!("Iteration {i}, shift = {max_shift}");
+
         if max_shift < tolerance {
             break;
         }
