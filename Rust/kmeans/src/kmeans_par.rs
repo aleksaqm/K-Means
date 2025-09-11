@@ -36,7 +36,6 @@ pub fn kmeans_par(
                 *assign = cluster;
             });
 
-        // Parallel reduction for sums and counts
         let (sums, counts) = points
             .par_iter()
             .zip(assignments.par_iter())
@@ -58,6 +57,16 @@ pub fn kmeans_par(
                     (sums1, counts1)
                 },
             );
+
+        // let mut sums = vec![Point::zero(); k];
+        // let mut counts = vec![0usize; k];
+        // points
+        //     .iter()
+        //     .zip(assignments.iter())
+        //     .for_each(|(point, &cluster)| {
+        //         sums[cluster] = sums[cluster].add(point);
+        //         counts[cluster] += 1;
+        //     });
 
         let mut max_shift = 0.0;
         for j in 0..k {

@@ -5,9 +5,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rand = "0.9.2"
+rand = "0.8"
 rayon = "1.8"
 plotters = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 [[bin]]
 name = "main"
@@ -16,3 +18,11 @@ path = "src/main.rs"
 [[bin]]
 name = "experiments"
 path = "src/scaling_experiments.rs"
+
+[[bin]]
+name = "main_with_saving"
+path = "src/kmeans_with_saving_data/main_with_saving.rs"
+
+[[bin]]
+name = "visualization"
+path = "src/visualization.rs"

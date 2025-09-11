@@ -6,7 +6,7 @@ use rand::prelude::*;
 use std::time::Instant;
 
 fn main() {
-    let n_points = 1000000;
+    let n_points = 2;
     let k = 4;
     let max_iters = 100;
     let tolerance = 0.001;
@@ -50,18 +50,6 @@ fn main() {
     }
     println!("Time elapsed: {:.2?}", duration_par);
 
-    println!("\nSequential assignments for first 10 points:");
-    for i in 0..10 {
-        println!(
-            "Point ({:.2}, {:.2}) -> Cluster {}",
-            points[i].x, points[i].y, seq_assignments[i]
-        );
-    }
-    println!("\nParallel assignments for first 10 points:");
-    for i in 0..10 {
-        println!(
-            "Point ({:.2}, {:.2}) -> Cluster {}",
-            points[i].x, points[i].y, par_assignments[i]
-        );
-    }
+    println!("First Seq assignment {}", seq_assignments[0]);
+    println!("First Par assignment {}", par_assignments[0]);
 }

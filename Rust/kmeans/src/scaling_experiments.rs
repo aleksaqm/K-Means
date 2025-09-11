@@ -2,8 +2,6 @@ mod kmeans_par;
 mod kmeans_seq;
 mod point;
 
-use kmeans_par::*;
-use kmeans_seq::*;
 use plotters::prelude::*;
 use point::Point;
 use rand::prelude::*;
@@ -244,9 +242,9 @@ fn main() {
     plot_scaling("strong_scaling_rust13.png", &strong_results, "amdahl", p);
     println!("Strong scaling done.");
 
-    // println!("Running weak scaling experiment...");
-    // let weak_results = weak_scaling(base_points, k, max_iters, tolerance, max_threads, n_runs);
-    // save_csv("weak_scaling_rust6.csv", &weak_results);
-    // plot_scaling("weak_scaling_rust6.png", &weak_results, "gustafson", p);
-    // println!("Weak scaling done.");
+    println!("Running weak scaling experiment...");
+    let weak_results = weak_scaling(base_points, k, max_iters, tolerance, max_threads, n_runs);
+    save_csv("weak_scaling_rust6.csv", &weak_results);
+    plot_scaling("weak_scaling_rust6.png", &weak_results, "gustafson", p);
+    println!("Weak scaling done.");
 }
