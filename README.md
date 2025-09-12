@@ -57,7 +57,7 @@ Za svaku iteraciju ćemo imati sliku na kojoj ćemo videti gde se u toj iteracij
 - Upoređivanje performansi sekvencijalnog i paralelnog koda kroz eksperimente jakog i slabog skaliranja.
 - Grafički prikazi ubrzanja u odnosu na broj procesorskih jezgara, sa idealnim (teorijskim) linijama skaliranja.
 - Vizualizacija procesa klasterizacije kroz Rust aplikaciju.
-- Kompletan izveštaj sa tehničkim detaljima, tabelama, grafikonima i analizom rezultata.
+- Kompletan izveštaj sa tehničkim detaljima, tabelama, grafikonima za jako i slabo skaliranje.
 
 
 
