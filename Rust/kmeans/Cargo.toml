@@ -21,7 +21,7 @@ path = "src/scaling_experiments.rs"
 
 [[bin]]
 name = "main_with_saving"
-path = "src/kmeans_with_saving_data/main_with_saving.rs"
+path = "src/main_with_saving.rs"
 
 [[bin]]
 name = "visualization"

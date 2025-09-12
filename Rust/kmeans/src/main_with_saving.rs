@@ -1,8 +1,7 @@
 mod kmeans_log;
 mod point;
-
+use crate::point::Point;
 use kmeans_log::kmeans_seq_log;
-use point::Point;
 use rand::prelude::*;
 use std::{fs, path::Path};
 
