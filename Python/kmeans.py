@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 
 class KMeans:
-    def __init__(self, k=3, max_iters=100, tolerance=1e-4, random_state=None):
+    def __init__(self, k=3, max_iters=100, tolerance=1e-3, random_state=None):
         self.k = k
         self.max_iters = max_iters
         self.tolerance = tolerance

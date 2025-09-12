@@ -16,7 +16,7 @@ fn next_vis_folder(base: &str) -> String {
 }
 
 fn main() {
-    let file = File::open("log_files/kmeans_log3.json").expect("Cannot open JSON file");
+    let file = File::open("log_files/kmeans_log4.json").expect("Cannot open JSON file");
     let reader = BufReader::new(file);
     let data: Value = serde_json::from_reader(reader).expect("Cannot parse JSON");
 
